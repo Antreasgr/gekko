@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import configBuilder from './backtestConfigBuilder.vue'
-import result from './result/result.vue'
-import { post } from '../../tools/ajax'
-import spinner from '../global/blockSpinner.vue'
+import configBuilder from './backtestConfigBuilder.vue';
+import result from './result/result.vue';
+import { post } from '../../tools/ajax';
+import spinner from '../global/blockSpinner.vue';
 
 export default {
   data: () => {
@@ -25,15 +25,14 @@ export default {
       backtestState: 'idle',
       backtestResult: false,
       config: false,
-    }
+    };
   },
   methods: {
     check: function(config) {
       // console.log('CHECK', config);
       this.config = config;
 
-      if(!config.valid)
-        return this.backtestable = false;
+      if (!config.valid) return (this.backtestable = false);
 
       this.backtestable = true;
     },
@@ -43,26 +42,35 @@ export default {
       const req = {
         gekkoConfig: this.config,
         data: {
-          candleProps: ['close', 'start'],
+          candleProps: [
+            'close',
+            'start',
+            'open',
+            'high',
+            'low',
+            'vwp',
+            'volume',
+            'trades',
+          ],
           indicatorResults: true,
           report: true,
           roundtrips: true,
-          trades: true
-        }
-      }
+          trades: true,
+        },
+      };
 
       post('backtest', req, (error, response) => {
         this.backtestState = 'fetched';
         this.backtestResult = response;
       });
-    }
+    },
   },
   components: {
     configBuilder,
     result,
-    spinner
-  }
-}
+    spinner,
+  },
+};
 </script>
 
 <style>
